@@ -1,3 +1,17 @@
+import React from "react";
+import EventBooking from "./components/eventBooking";
+import "./App.css";
+
+export default function App() {
+  return (
+    <div className="App">
+      <EventBooking />
+    </div>
+  );
+}
+
+
+
 // 1.	Создание нового React проекта
 
 // Откройте терминал и создайте новый проект React с помощью Create React App, используя команду npx create-react-app имя-проекта.

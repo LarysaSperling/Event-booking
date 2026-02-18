@@ -10,7 +10,9 @@ export default function EventBooking() {
 
   const toggleSeat = (seat) => {
     setSelected((prev) =>
-      prev.includes(seat) ? prev.filter((s) => s !== seat) : [...prev, seat]
+      prev.includes(seat)
+        ? prev.filter((s) => s !== seat)
+        : [...prev, seat]
     );
   };
 
@@ -22,12 +24,15 @@ export default function EventBooking() {
         venue="City Arena"
       />
 
-      <SeatSelector seats={seats} selected={selected} onToggle={toggleSeat} />
+      <SeatSelector
+        seats={seats}
+        selected={selected}
+        onToggle={toggleSeat}
+      />
 
       <p className={styles.selected}>
-        Selected Seats: {selected.join(", ") || "—"}
+        Selected Seats: {selected.join(", ") || "-"}
       </p>
     </div>
   );
 }
-

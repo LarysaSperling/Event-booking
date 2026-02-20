@@ -1,15 +1,53 @@
-.details h1 {
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.details h1,
+.details h2 {
   font-size: clamp(28px, 5vw, 48px);
   color: #1e40ff;
-  margin-bottom: 20px;
+  margin: 0;
 }
 
 .details p {
   font-size: clamp(16px, 2.2vw, 22px);
   color: #1e40ff;
+  margin: 0;
 }
+
+.details label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1e40ff;
+}
+
+.details input,
+.details select {
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 2px solid #1e40ff;
+  background: #fff;
+  font-size: 14px;
+  outline: none;
+  transition: 0.2s ease;
+}
+
+.details input:focus,
+.details select:focus {
+  border-color: #0f2be0;
+  box-shadow: 0 0 0 2px rgba(30, 64, 255, 0.2);
+}
+
+
 @media (max-width: 768px) {
-  .details h1 {
+  .details h1,
+  .details h2 {
     font-size: 28px;
   }
 

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import EventDetails from "../eventDetails";
 import SeatSelector from "../seatSelector";
 import styles from "./styles.module.css";
@@ -14,23 +14,39 @@ export default function EventBooking({ eventsData }) {
   const [selectedEventId, setSelectedEventId] = useState(null);
   const [selectedSeats, setSelectedSeats] = useState([]);
 
+  
   const currentDateBlock = useMemo(() => {
     return eventsData.find(
       (item) => formatDate(item.date) === selectedDate
-    );
-  }, [selectedDate, eventsData]);
+    ) || null;
+  }, [eventsData, selectedDate]);
+
+ 
+  const events = currentDateBlock?.events ?? [];
+
 
   const currentEvent = useMemo(() => {
-    if (!currentDateBlock) return null;
+    if (!events.length) return null;
+    return events.find((e) => e.id === selectedEventId) ?? events[0];
+  }, [events, selectedEventId]);
 
-    if (!selectedEventId) return currentDateBlock.events[0];
+  
+  useEffect(() => {
+    const firstEventId = events[0]?.id ?? null;
+    setSelectedEventId(firstEventId);
+    setSelectedSeats([]);
+  }, [selectedDate, events]);
 
-    return currentDateBlock.events.find(
-      (e) => e.id === selectedEventId
-    );
-  }, [currentDateBlock, selectedEventId]);
+  useEffect(() => {
+    setSelectedSeats([]);
+  }, [selectedEventId]);
 
   const toggleSeat = (seatId) => {
+    if (!currentEvent) return;
+
+    const seat = currentEvent.seats.find((s) => s.id === seatId);
+    if (!seat || seat.isSelected) return;
+
     setSelectedSeats((prev) =>
       prev.includes(seatId)
         ? prev.filter((id) => id !== seatId)
@@ -38,31 +54,43 @@ export default function EventBooking({ eventsData }) {
     );
   };
 
+  const selectedSeatLabels = useMemo(() => {
+    if (!currentEvent) return [];
+    const map = new Map(currentEvent.seats.map((s) => [s.id, s.label]));
+    return selectedSeats.map((id) => map.get(id)).filter(Boolean);
+  }, [selectedSeats, currentEvent]);
+
   return (
     <div className={styles.card}>
       <EventDetails
         eventsData={eventsData}
         selectedDate={selectedDate}
         onDateChange={setSelectedDate}
-        selectedEventId={currentEvent?.id}
+        selectedEventId={selectedEventId}
         onEventChange={setSelectedEventId}
       />
 
-      {currentEvent && (
+      {currentEvent ? (
         <>
           <h3>Select seats</h3>
+
           <SeatSelector
             seats={currentEvent.seats}
             selectedSeats={selectedSeats}
             onToggle={toggleSeat}
           />
-          <p>
+
+          <p className={styles.selected}>
             Selected seats:{" "}
-            {selectedSeats.length
-              ? selectedSeats.join(", ")
+            {selectedSeatLabels.length
+              ? selectedSeatLabels.join(", ")
               : "-"}
           </p>
         </>
+      ) : (
+        <p className={styles.selected}>
+          No events for this date
+        </p>
       )}
     </div>
   );

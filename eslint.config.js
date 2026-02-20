@@ -4,6 +4,9 @@ import pluginReact from "eslint-plugin-react";
 import { defineConfig } from "eslint/config";
 
 export default defineConfig([
+  js.configs.recommended,
+  pluginReact.configs.flat.recommended,
+
   {
     files: ["**/*.{js,mjs,cjs,jsx}"],
     languageOptions: {
@@ -14,9 +17,6 @@ export default defineConfig([
       },
       globals: globals.browser,
     },
-    plugins: {
-      react: pluginReact,
-    },
     settings: {
       react: { version: "detect" },
     },
@@ -25,8 +25,4 @@ export default defineConfig([
       "react/react-in-jsx-scope": "off",
     },
   },
-
-  js.configs.recommended,
-  pluginReact.configs.flat.recommended,
 ]);
-

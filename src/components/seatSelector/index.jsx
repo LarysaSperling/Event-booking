@@ -1,21 +1,23 @@
 import React from "react";
 import styles from "./styles.module.css";
 
-export default function SeatSelector({ seats, selected, onToggle }) {
+export default function SeatSelector({ seats, selectedSeats, onToggle }) {
   return (
     <div className={styles.seats}>
       {seats.map((seat) => {
-        const active = selected.includes(seat);
+        const isPicked = selectedSeats.includes(seat.id);
 
         return (
           <button
-            key={seat}
-            className={`${styles.seat} ${
-              active ? styles.active : ""
-            }`}
-            onClick={() => onToggle(seat)}
+            key={seat.id}
+            disabled={seat.isSelected}
+            className={`${styles.seat}
+              ${seat.isSelected ? styles.busy : ""}
+              ${isPicked ? styles.active : ""}
+            `}
+            onClick={() => onToggle(seat.id)}
           >
-            {seat}
+            {seat.label}
           </button>
         );
       })}

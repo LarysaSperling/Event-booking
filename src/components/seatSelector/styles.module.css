@@ -12,9 +12,31 @@
   background: #ddd;
   cursor: pointer;
   border-radius: 6px;
+  transition: 0.2s ease;
+  font-weight: 500;
 }
+
+
+.seat:not(:disabled):hover {
+  background: #cfcfcf;
+  transform: translateY(-2px);
+}
+
 
 .active {
   background: #8fd18f;
+  border-color: #4caf50;
 }
 
+
+.busy {
+  background: #999;
+  border-color: #666;
+  cursor: not-allowed;
+  opacity: 0.6;
+  text-decoration: line-through;
+}
+
+.seat:disabled {
+  pointer-events: none;
+}

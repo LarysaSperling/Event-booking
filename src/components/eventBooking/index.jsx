@@ -1,38 +1,69 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import EventDetails from "../eventDetails";
 import SeatSelector from "../seatSelector";
 import styles from "./styles.module.css";
 
-export default function EventBooking() {
-  const [selected, setSelected] = useState([]);
+function formatDate(date) {
+  return date.toISOString().split("T")[0];
+}
 
-  const seats = ["1A", "1B", "1C", "1D", "1E", "1F", "1G"];
+export default function EventBooking({ eventsData }) {
+  const firstDate = formatDate(eventsData[0].date);
 
-  const toggleSeat = (seat) => {
-    setSelected((prev) =>
-      prev.includes(seat)
-        ? prev.filter((s) => s !== seat)
-        : [...prev, seat]
+  const [selectedDate, setSelectedDate] = useState(firstDate);
+  const [selectedEventId, setSelectedEventId] = useState(null);
+  const [selectedSeats, setSelectedSeats] = useState([]);
+
+  const currentDateBlock = useMemo(() => {
+    return eventsData.find(
+      (item) => formatDate(item.date) === selectedDate
+    );
+  }, [selectedDate, eventsData]);
+
+  const currentEvent = useMemo(() => {
+    if (!currentDateBlock) return null;
+
+    if (!selectedEventId) return currentDateBlock.events[0];
+
+    return currentDateBlock.events.find(
+      (e) => e.id === selectedEventId
+    );
+  }, [currentDateBlock, selectedEventId]);
+
+  const toggleSeat = (seatId) => {
+    setSelectedSeats((prev) =>
+      prev.includes(seatId)
+        ? prev.filter((id) => id !== seatId)
+        : [...prev, seatId]
     );
   };
 
   return (
     <div className={styles.card}>
       <EventDetails
-        title="Concert of the Year"
-        date="2023-12-01"
-        venue="City Arena"
+        eventsData={eventsData}
+        selectedDate={selectedDate}
+        onDateChange={setSelectedDate}
+        selectedEventId={currentEvent?.id}
+        onEventChange={setSelectedEventId}
       />
 
-      <SeatSelector
-        seats={seats}
-        selected={selected}
-        onToggle={toggleSeat}
-      />
-
-      <p className={styles.selected}>
-        Selected Seats: {selected.join(", ") || "-"}
-      </p>
+      {currentEvent && (
+        <>
+          <h3>Select seats</h3>
+          <SeatSelector
+            seats={currentEvent.seats}
+            selectedSeats={selectedSeats}
+            onToggle={toggleSeat}
+          />
+          <p>
+            Selected seats:{" "}
+            {selectedSeats.length
+              ? selectedSeats.join(", ")
+              : "-"}
+          </p>
+        </>
+      )}
     </div>
   );
 }

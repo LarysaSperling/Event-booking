@@ -2,307 +2,236 @@ import React, { useState } from "react";
 import EventBooking from "./components/eventBooking";
 import "./App.css";
 
+function d(y, m, day) {
+
+  return new Date(y, m - 1, day);
+}
+
+function seats(count, labelFn, bookedFn = () => false) {
+  return Array.from({ length: count }, (_, i) => ({
+    id: i + 1,
+    label: labelFn(i),
+    isBooked: bookedFn(i),
+  }));
+}
+
+function bookedRule(i, mod, threshold) {
+  return ((i + 1) * 17) % mod <= threshold;
+}
+
 function buildEventsData() {
   return [
-
-  {
-    id: 237632,
-    date: new Date("2026-03-21"),
-    events: [
-      {
-        id: 7843687,
-        title: "Gorvin Show",
-        seats: Array.from({ length: 50 }, (_, i) => ({
-          id: i + 1,
-          label: `${Math.floor(i / 10) + 1}${String.fromCharCode(97 + (i % 10))}`,
-          isSelected: false
-        }))
-      },
-      {
-        id: 7843688,
-        title: "Comedy Night",
-        seats: Array.from({ length: 40 }, (_, i) => ({
-          id: i + 1,
-          label: `R${Math.floor(i / 8) + 1}S${(i % 8) + 1}`,
-          isSelected: i % 5 === 0 
-        }))
-      },
-      {
-        id: 7843689,
-        title: "Improv Show",
-        seats: Array.from({ length: 30 }, (_, i) => ({
-          id: i + 1,
-          label: `A${i + 1}`,
-          isSelected: [3, 7, 12, 15, 22].includes(i + 1)
-        }))
-      }
-    ]
-  },
-  {
-    id: 237633,
-    date: new Date("2026-03-22"),
-    events: [
-      {
-        id: 7843690,
-        title: "Rock Concert",
-        seats: Array.from({ length: 100 }, (_, i) => ({
-          id: i + 1,
-          label: `${String.fromCharCode(65 + Math.floor(i / 20))}${(i % 20) + 1}`,
-          isSelected: Math.random() > 0.7 
-        }))
-      },
-      {
-        id: 7843691,
-        title: "Metal Night",
-        seats: Array.from({ length: 60 }, (_, i) => ({
-          id: i + 1,
-          label: `M${i + 1}`,
-          isSelected: false
-        }))
-      }
-    ]
-  },
-  {
-    id: 237634,
-    date: new Date("2026-03-23"),
-    events: [
-      {
-        id: 7843692,
-        title: "Magic Show",
-        seats: Array.from({ length: 45 }, (_, i) => ({
-          id: i + 1,
-          label: `S${i + 1}`,
-          isSelected: i < 5 
-        }))
-      },
-      {
-        id: 7843693,
-        title: "Illusionist",
-        seats: Array.from({ length: 35 }, (_, i) => ({
-          id: i + 1,
-          label: `VIP${i + 1}`,
-          isSelected: false
-        }))
-      }
-    ]
-  },
-  {
-    id: 237635,
-    date: new Date("2026-03-24"),
-    events: [
-      {
-        id: 7843694,
-        title: "Jazz Evening",
-        seats: Array.from({ length: 25 }, (_, i) => ({
-          id: i + 1,
-          label: `J${i + 1}`,
-          isSelected: i % 3 === 0
-        }))
-      },
-      {
-        id: 7843695,
-        title: "Blues Night",
-        seats: Array.from({ length: 30 }, (_, i) => ({
-          id: i + 1,
-          label: `B${i + 1}`,
-          isSelected: i > 20 
-        }))
-      },
-      {
-        id: 7843696,
-        title: "Soul Music",
-        seats: Array.from({ length: 20 }, (_, i) => ({
-          id: i + 1,
-          label: `SO${i + 1}`,
-          isSelected: false
-        }))
-      }
-    ]
-  },
-  {
-    id: 237636,
-    date: new Date("2026-03-25"),
-    events: [
-      {
-        id: 7843697,
-        title: "Dance Performance",
-        seats: Array.from({ length: 80 }, (_, i) => ({
-          id: i + 1,
-          label: `D${Math.floor(i / 10) + 1}-${(i % 10) + 1}`,
-          isSelected: i % 7 === 0
-        }))
-      }
-    ]
-  },
-  {
-    id: 237637,
-    date: new Date("2026-03-26"),
-    events: [
-      {
-        id: 7843698,
-        title: "Theater Play",
-        seats: Array.from({ length: 120 }, (_, i) => ({
-          id: i + 1,
-          label: `T${Math.floor(i / 12) + 1}-${(i % 12) + 1}`,
-          isSelected: false
-        }))
-      },
-      {
-        id: 7843699,
-        title: "Drama",
-        seats: Array.from({ length: 90 }, (_, i) => ({
-          id: i + 1,
-          label: `DR${i + 1}`,
-          isSelected: i < 10
-        }))
-      }
-    ]
-  },
-  {
-    id: 237638,
-    date: new Date("2026-03-27"),
-    events: [
-      {
-        id: 7843700,
-        title: "Stand-up Comedy",
-        seats: Array.from({ length: 55 }, (_, i) => ({
-          id: i + 1,
-          label: `C${i + 1}`,
-          isSelected: [1, 2, 3, 10, 15, 30, 45].includes(i + 1)
-        }))
-      }
-    ]
-  },
-  {
-    id: 237639,
-    date: new Date("2026-03-28"),
-    events: [
-      {
-        id: 7843701,
-        title: "Opera",
-        seats: Array.from({ length: 150 }, (_, i) => ({
-          id: i + 1,
-          label: `O${Math.floor(i / 15) + 1}-${(i % 15) + 1}`,
-          isSelected: i > 140 
-        }))
-      }
-    ]
-  },
-  {
-    id: 237640,
-    date: new Date("2026-03-29"),
-    events: [
-      {
-        id: 7843702,
-        title: "Ballet",
-        seats: Array.from({ length: 85 }, (_, i) => ({
-          id: i + 1,
-          label: `B${i + 1}`,
-          isSelected: i % 4 === 0
-        }))
-      },
-      {
-        id: 7843703,
-        title: "Modern Dance",
-        seats: Array.from({ length: 40 }, (_, i) => ({
-          id: i + 1,
-          label: `MD${i + 1}`,
-          isSelected: false
-        }))
-      }
-    ]
-  },
-  {
-    id: 237641,
-    date: new Date("2026-03-30"),
-    events: [
-      {
-        id: 7843704,
-        title: "Kids Show",
-        seats: Array.from({ length: 70 }, (_, i) => ({
-          id: i + 1,
-          label: `K${Math.floor(i / 14) + 1}-${(i % 14) + 1}`,
-          isSelected: i < 20
-        }))
-      }
-    ]
-  },
-  {
-    id: 237642,
-    date: new Date("2026-03-31"),
-    events: [
-      {
-        id: 7843705,
-        title: "New Year Party",
-        seats: Array.from({ length: 200 }, (_, i) => ({
-          id: i + 1,
-          label: `NY${Math.floor(i / 20) + 1}-${(i % 20) + 1}`,
-          isSelected: i % 2 === 0 
-        }))
-      }
-    ]
-  },
-  
-
-  {
-    id: 237643,
-    date: new Date("2026-04-01"),
-    events: [
-      {
-        id: 7843706,
-        title: "April Fools Show",
-        seats: Array.from({ length: 50 }, (_, i) => ({
-          id: i + 1,
-          label: `AF${i + 1}`,
-          isSelected: false
-        }))
-      }
-    ]
-  },
-  {
-    id: 237644,
-    date: new Date("2026-04-02"),
-    events: [
-      {
-        id: 7843707,
-        title: "Rock Festival",
-        seats: Array.from({ length: 300 }, (_, i) => ({
-          id: i + 1,
-          label: `RF${Math.floor(i / 30) + 1}-${(i % 30) + 1}`,
-          isSelected: Math.random() > 0.5
-        }))
-      }
-    ]
-  },
-  {
-    id: 237645,
-    date: new Date("2026-04-03"),
-    events: [
-      {
-        id: 7843708,
-        title: "Hip-Hop Night",
-        seats: Array.from({ length: 75 }, (_, i) => ({
-          id: i + 1,
-          label: `HH${i + 1}`,
-          isSelected: i % 6 === 0
-        }))
-      },
-      {
-        id: 7843709,
-        title: "R&B Concert",
-        seats: Array.from({ length: 65 }, (_, i) => ({
-          id: i + 1,
-          label: `RB${i + 1}`,
-          isSelected: i > 50
-        }))
-      }
-    ]
-  }
-];
+    {
+      id: 237632,
+      date: d(2026, 3, 21),
+      events: [
+        {
+          id: 7843687,
+          title: "Gorvin Show",
+          seats: seats(
+            50,
+            (i) => `${Math.floor(i / 10) + 1}${String.fromCharCode(97 + (i % 10))}`,
+            () => false
+          ),
+        },
+        {
+          id: 7843688,
+          title: "Comedy Night",
+          seats: seats(40, (i) => `R${Math.floor(i / 8) + 1}S${(i % 8) + 1}`, (i) => (i + 1) % 5 === 0),
+        },
+        {
+          id: 7843689,
+          title: "Improv Show",
+          seats: seats(30, (i) => `A${i + 1}`, (i) => [3, 7, 12, 15, 22].includes(i + 1)),
+        },
+      ],
+    },
+    {
+      id: 237633,
+      date: d(2026, 3, 22),
+      events: [
+        {
+          id: 7843690,
+          title: "Rock Concert",
+          seats: seats(
+            100,
+            (i) => `${String.fromCharCode(65 + Math.floor(i / 20))}${(i % 20) + 1}`,
+            (i) => bookedRule(i, 10, 2) // ~30%
+          ),
+        },
+        {
+          id: 7843691,
+          title: "Metal Night",
+          seats: seats(60, (i) => `M${i + 1}`, () => false),
+        },
+      ],
+    },
+    {
+      id: 237634,
+      date: d(2026, 3, 23),
+      events: [
+        {
+          id: 7843692,
+          title: "Magic Show",
+          seats: seats(45, (i) => `S${i + 1}`, (i) => i < 5),
+        },
+        {
+          id: 7843693,
+          title: "Illusionist",
+          seats: seats(35, (i) => `VIP${i + 1}`, () => false),
+        },
+      ],
+    },
+    {
+      id: 237635,
+      date: d(2026, 3, 24),
+      events: [
+        {
+          id: 7843694,
+          title: "Jazz Evening",
+          seats: seats(25, (i) => `J${i + 1}`, (i) => i % 3 === 0),
+        },
+        {
+          id: 7843695,
+          title: "Blues Night",
+          seats: seats(30, (i) => `B${i + 1}`, (i) => i > 20),
+        },
+        {
+          id: 7843696,
+          title: "Soul Music",
+          seats: seats(20, (i) => `SO${i + 1}`, () => false),
+        },
+      ],
+    },
+    {
+      id: 237636,
+      date: d(2026, 3, 25),
+      events: [
+        {
+          id: 7843697,
+          title: "Dance Performance",
+          seats: seats(80, (i) => `D${Math.floor(i / 10) + 1}-${(i % 10) + 1}`, (i) => i % 7 === 0),
+        },
+      ],
+    },
+    {
+      id: 237637,
+      date: d(2026, 3, 26),
+      events: [
+        {
+          id: 7843698,
+          title: "Theater Play",
+          seats: seats(120, (i) => `T${Math.floor(i / 12) + 1}-${(i % 12) + 1}`, () => false),
+        },
+        {
+          id: 7843699,
+          title: "Drama",
+          seats: seats(90, (i) => `DR${i + 1}`, (i) => i < 10),
+        },
+      ],
+    },
+    {
+      id: 237638,
+      date: d(2026, 3, 27),
+      events: [
+        {
+          id: 7843700,
+          title: "Stand-up Comedy",
+          seats: seats(55, (i) => `C${i + 1}`, (i) => [1, 2, 3, 10, 15, 30, 45].includes(i + 1)),
+        },
+      ],
+    },
+    {
+      id: 237639,
+      date: d(2026, 3, 28),
+      events: [
+        {
+          id: 7843701,
+          title: "Opera",
+          seats: seats(150, (i) => `O${Math.floor(i / 15) + 1}-${(i % 15) + 1}`, (i) => i > 140),
+        },
+      ],
+    },
+    {
+      id: 237640,
+      date: d(2026, 3, 29),
+      events: [
+        {
+          id: 7843702,
+          title: "Ballet",
+          seats: seats(85, (i) => `B${i + 1}`, (i) => i % 4 === 0),
+        },
+        {
+          id: 7843703,
+          title: "Modern Dance",
+          seats: seats(40, (i) => `MD${i + 1}`, () => false),
+        },
+      ],
+    },
+    {
+      id: 237641,
+      date: d(2026, 3, 30),
+      events: [
+        {
+          id: 7843704,
+          title: "Kids Show",
+          seats: seats(70, (i) => `K${Math.floor(i / 14) + 1}-${(i % 14) + 1}`, (i) => i < 20),
+        },
+      ],
+    },
+    {
+      id: 237642,
+      date: d(2026, 3, 31),
+      events: [
+        {
+          id: 7843705,
+          title: "New Year Party",
+          seats: seats(200, (i) => `NY${Math.floor(i / 20) + 1}-${(i % 20) + 1}`, (i) => (i + 1) % 2 === 0),
+        },
+      ],
+    },
+    {
+      id: 237643,
+      date: d(2026, 4, 1),
+      events: [
+        {
+          id: 7843706,
+          title: "April Fools Show",
+          seats: seats(50, (i) => `AF${i + 1}`, () => false),
+        },
+      ],
+    },
+    {
+      id: 237644,
+      date: d(2026, 4, 2),
+      events: [
+        {
+          id: 7843707,
+          title: "Rock Festival",
+          seats: seats(300, (i) => `RF${Math.floor(i / 30) + 1}-${(i % 30) + 1}`, (i) => bookedRule(i, 10, 4)), // ~50%
+        },
+      ],
+    },
+    {
+      id: 237645,
+      date: d(2026, 4, 3),
+      events: [
+        {
+          id: 7843708,
+          title: "Hip-Hop Night",
+          seats: seats(75, (i) => `HH${i + 1}`, (i) => i % 6 === 0),
+        },
+        {
+          id: 7843709,
+          title: "R&B Concert",
+          seats: seats(65, (i) => `RB${i + 1}`, (i) => i > 50),
+        },
+      ],
+    },
+  ];
 }
 
 export default function App() {
-  
   const [eventsData] = useState(() => buildEventsData());
 
   return (
@@ -311,7 +240,6 @@ export default function App() {
     </div>
   );
 }
-
 
 
 

@@ -4,30 +4,36 @@
   justify-content: center;
   gap: 12px;
   margin: 24px 0;
+  max-width: 720px;      
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .seat {
-  padding: 10px 16px;
+  width: 50px;           
+  height: 50px;          
+
+  display: flex;        
+  align-items: center;
+  justify-content: center;
+
   border: 2px solid #333;
   background: #ddd;
-  cursor: pointer;
   border-radius: 6px;
+  cursor: pointer;
   transition: 0.2s ease;
   font-weight: 500;
 }
-
 
 .seat:not(:disabled):hover {
   background: #cfcfcf;
   transform: translateY(-2px);
 }
 
-
 .active {
   background: #8fd18f;
   border-color: #4caf50;
 }
-
 
 .busy {
   background: #999;
